@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using SeleniumAndRestSharp.Core;
-using SeleniumAndRestSharp.Pages;
+using SeleniumRestsharp.Core;
+using SeleniumRestsharp.Pages;
 
-namespace SeleniumAndRestSharp.Tests;
+namespace SeleniumRestsharp.Tests;
 
 [TestFixture]
 public abstract class BaseTest

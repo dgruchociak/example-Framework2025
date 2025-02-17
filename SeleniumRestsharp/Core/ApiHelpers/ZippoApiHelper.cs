@@ -1,9 +1,10 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 using RestSharp;
+using SeleniumAndRestSharp.Core;
 using SeleniumAndRestSharp.Core.Entity;
 
-namespace SeleniumAndRestSharp.Core.ApiHelpers;
+namespace SeleniumRestsharp.Core.ApiHelpers;
 
 public class ZippoApiHelper
 {

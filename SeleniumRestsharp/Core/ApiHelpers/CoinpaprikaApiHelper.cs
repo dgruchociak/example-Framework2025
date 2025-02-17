@@ -1,7 +1,7 @@
 ﻿using CoinpaprikaAPI.Entity;
 using CoinpaprikaAPI.Models;
 
-namespace SeleniumAndRestSharp.Core.ApiHelpers;
+namespace SeleniumRestsharp.Core.ApiHelpers;
 
 public class CoinpaprikaApiHelper
 {

@@ -1,7 +1,6 @@
-﻿using OpenQA.Selenium;
-using SeleniumAndRestSharp.Core;
+﻿using SeleniumRestsharp.Core;
 
-namespace SeleniumAndRestSharp.Pages;
+namespace SeleniumRestsharp.Pages;
 
 public abstract class BasePage(Browser browser)
 {

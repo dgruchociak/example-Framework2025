@@ -1,7 +1,7 @@
 ﻿using OpenQA.Selenium;
-using SeleniumAndRestSharp.Core;
+using SeleniumRestsharp.Core;
 
-namespace SeleniumAndRestSharp.Pages;
+namespace SeleniumRestsharp.Pages;
 
 public class MainPage(Browser browser) : BasePage(browser)
 {

@@ -1,8 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using SeleniumAndRestSharp.Core;
 using SeleniumExtras.WaitHelpers;
 
-namespace SeleniumAndRestSharp.Core;
+namespace SeleniumRestsharp.Core;
 
 public class Browser
 {

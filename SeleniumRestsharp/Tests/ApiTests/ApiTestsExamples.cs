@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using SeleniumAndRestSharp.Core.ApiHelpers;
+using SeleniumRestsharp.Core.ApiHelpers;
 
-namespace SeleniumAndRestSharp.Tests.ApiTests;
+namespace SeleniumRestsharp.Tests.ApiTests;
 
 public class ApiTestsExamples
 {

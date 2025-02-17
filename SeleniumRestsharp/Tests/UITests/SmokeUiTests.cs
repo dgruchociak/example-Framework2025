@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using SeleniumAndRestSharp.Pages;
+using SeleniumRestsharp.Pages;
 
-namespace SeleniumAndRestSharp.Tests.UITests;
+namespace SeleniumRestsharp.Tests.UITests;
 
 public class SmokeUiTests : BaseTest
 {

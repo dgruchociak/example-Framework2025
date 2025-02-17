@@ -1,4 +1,4 @@
-﻿namespace SeleniumAndRestSharp.Core;
+﻿namespace SeleniumRestsharp.Core;
 
 public class TestHelper
 {
