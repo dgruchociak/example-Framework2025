@@ -29,7 +29,7 @@ public class ApiTestsExamples
     [Test]
     public async Task TestCoinPaprikaApi()
     {
-        var bitcoin = await _coinpaprikaApiHelper.GetBitcoinCoinInfoAsync();
+        var bitcoin = await _coinpaprikaApiHelper.GetCoinInfoAsync("btc-bitcoin");
         var allCoins = await _coinpaprikaApiHelper.GetAllCoinsAsync();
         
         Assert.That(bitcoin, Is.Not.Null);

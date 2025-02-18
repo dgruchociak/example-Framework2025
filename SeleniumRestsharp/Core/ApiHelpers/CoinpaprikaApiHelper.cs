@@ -12,10 +12,10 @@ public class CoinpaprikaApiHelper
         _client = new CoinpaprikaAPI.Client();
     }
 
-    public async Task<IEnumerable<CoinInfo>> GetBitcoinCoinInfoAsync()
+    public async Task<IEnumerable<CoinInfo>> GetCoinInfoAsync(string id)
     {
         var allCoins = await _client.GetCoinsAsync();
-        var bitcoin = allCoins.Value.Where(x => x.Id == "btc-bitcoin");
+        var bitcoin = allCoins.Value.Where(x => x.Id == id);
         
         return bitcoin;
     }

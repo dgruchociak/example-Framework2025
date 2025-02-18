@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/v1/coins/eth-ethereum"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"id\": \"eth-ethereum\", \"isActive\": true, \"isNew\": false, \"name\": \"Ethereum\",  \"rank\": 2, \"symbol\": \"ETH\", \"type\": \"coin\"}"
+  }
+}
