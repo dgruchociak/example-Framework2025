@@ -18,10 +18,12 @@ public class WiremockServerManager
     //     If starting and stopping the WireMock server are purely synchronous operations (e.g., in-memory setup with no external dependencies), making these methods async adds unnecessary complexity without any real benefit.
 
     // But for educational purpose I've made it async ;)
+
     public static Task<WireMockServer> Start()
     {
         if (_server == null)
         {
+            // TODO can be moved to appsettings.json
             var settings = new WireMockServerSettings
             {
                 Port = 9095,
@@ -31,6 +33,8 @@ public class WiremockServerManager
             };
 
             _server = WireMockServer.Start(settings);
+            
+            // TODO instead of Console.WriteLine implement logging
             Console.WriteLine($"WireMock.NET server is running on ({_server.Urls[0]})");
 
             // Define a stub mappings:

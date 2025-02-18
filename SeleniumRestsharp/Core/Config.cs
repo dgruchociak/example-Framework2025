@@ -1,5 +1,6 @@
 ﻿namespace SeleniumRestsharp.Core;
 
+// TODO can be moved to appsettings.json
 public static class Config
 {
     public static string BaseUrl => "https://www.bing.com";
