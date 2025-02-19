@@ -5,9 +5,9 @@ using OpenQA.Selenium.Firefox;
 
 namespace SeleniumRestsharp.Core;
 
-public abstract class WebDriverFactory
+public class WebDriverFactory
 {
-    public static IWebDriver CreateDriver(string browserName)
+    public IWebDriver CreateDriver(string browserName)
     {
         switch (browserName.ToLower())
         {

@@ -6,19 +6,23 @@ using SeleniumRestsharp.Pages;
 namespace SeleniumRestsharp.Tests;
 
 [TestFixture]
+//TODO Add parallelization
+// [Parallelizable(ParallelScope.All)]
 public abstract class BaseTest
 {
     private IWebDriver _driver;
     protected Browser Browser;
     private MainPage _mainPage;
+    private WebDriverFactory _webDriverFactory;
 
     [SetUp]
     public void SetUp()
     {
-        _driver = WebDriverFactory.CreateDriver(Config.Browser);
+        _webDriverFactory = new WebDriverFactory();
         Browser = new Browser(_driver);
         _mainPage = new MainPage(Browser);
-
+        _driver = _webDriverFactory.CreateDriver(Config.Browser);
+        
         try
         {
             _driver.Manage().Window.Maximize();
