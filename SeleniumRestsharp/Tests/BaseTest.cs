@@ -19,16 +19,17 @@ public abstract class BaseTest
     public void SetUp()
     {
         _webDriverFactory = new WebDriverFactory();
+        _driver = _webDriverFactory.CreateDriver(Config.Browser);
         Browser = new Browser(_driver);
         _mainPage = new MainPage(Browser);
-        _driver = _webDriverFactory.CreateDriver(Config.Browser);
         
         try
         {
             _driver.Manage().Window.Maximize();
-            Browser.GoTo(Config.BaseUrl);
-            Browser.WaitForPageLoad(_driver);
-            _mainPage.AcceptCookies<MainPage>();
+            Browser.GoTo(Config.CandyUrl);
+            // Browser.GoTo(Config.BaseUrl);
+            Browser.WaitForPageLoad();
+            // _mainPage.AcceptCookies<MainPage>();
         }
         catch (Exception e)
         {
