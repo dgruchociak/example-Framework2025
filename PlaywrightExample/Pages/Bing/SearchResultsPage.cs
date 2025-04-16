@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace Playwright.Pages;
+namespace Playwright.Pages.Bing;
 
 public class SearchResultsPage(IPage page) : BasePage(page)
 {

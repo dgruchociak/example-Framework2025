@@ -4,12 +4,7 @@ namespace Playwright.Core;
 
 public class BrowserFactory
 {
-    private readonly IPlaywright _playwright;
-
-    public BrowserFactory()
-    {
-        _playwright = Microsoft.Playwright.Playwright.CreateAsync().GetAwaiter().GetResult();
-    }
+    private readonly IPlaywright _playwright = Microsoft.Playwright.Playwright.CreateAsync().GetAwaiter().GetResult();
 
     public async Task<IBrowser> CreateBrowserAsync(string browserType = "chromium", bool headless = true)
     {
@@ -38,10 +33,11 @@ public class BrowserFactory
         return browser;
     }
 
-    public async Task<IPage> CreatePageAsync(IBrowser browser)
+    public static async Task<(IPage, IBrowserContext)> CreatePageAsync(IBrowser browser)
     {
         var context = await browser.NewContextAsync();
-        return await context.NewPageAsync();
+        var page = await context.NewPageAsync();
+        return (page, context);
     }
 
     public void Dispose()

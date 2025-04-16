@@ -4,7 +4,7 @@ namespace Playwright.Pages;
 
 public abstract class BasePage(IPage page)
 {
-    protected readonly IPage Page = page;
+    protected readonly IPage Page = page ?? throw new ArgumentNullException(nameof(page));
 
     public abstract Task WaitForPageLoadAsync();
     
@@ -21,5 +21,10 @@ public abstract class BasePage(IPage page)
 
             await Task.Delay(TimeSpan.FromSeconds(1));
         }
+    }
+    
+    protected async Task GoTo(ILocator locator)
+    {
+        await locator.ClickAsync();
     }
 }

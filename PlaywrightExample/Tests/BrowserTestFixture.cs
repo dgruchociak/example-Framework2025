@@ -9,6 +9,7 @@ public class BrowserTestFixture : IDisposable
 {
     protected IBrowser Browser;
     protected IPage Page;
+    protected IBrowserContext Context;
     private BrowserFactory _browserFactory;
 
     [SetUp]
@@ -16,14 +17,15 @@ public class BrowserTestFixture : IDisposable
     {
         _browserFactory = new BrowserFactory();
         Browser = await _browserFactory.CreateBrowserAsync("chromium", headless: false);
-        Page = await _browserFactory.CreatePageAsync(Browser);
-        await Page.GotoAsync(Config.BaseUrl);
+        (Page, Context) = await BrowserFactory.CreatePageAsync(Browser);
+        await Page.GotoAsync(Config.CommitQualityUrl);
     }
 
     [TearDown]
     public async Task TearDown()
     {
         await Browser.CloseAsync();
+        // await Context.CloseAsync();
         Dispose();
     }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace Playwright.Pages;
+namespace Playwright.Pages.Bing;
 
 public class HomePage(IPage page) : BasePage(page)
 {
