@@ -9,9 +9,9 @@ public class PracticeTests : BrowserTestFixture
     private NavigationBarComponent _navigationBar;
     private AccordionsComponent _accordionsComponent;
     private GeneralComponentsComponent _generalComponentsComponent;
-
-    // private PracticePage _practicePage;
+    private DragAndDropComponent _dragAndDropComponent;
     private IframePage _iframePage;
+    private FilePage _fileUploadPage;
     private readonly List<string> _buttonTextsMsg = ["Button clicked", "Button double clicked", "Button right mouse clicked"];
 
     [SetUp]
@@ -20,11 +20,10 @@ public class PracticeTests : BrowserTestFixture
         _navigationBar = new NavigationBarComponent(Page);
         _accordionsComponent = new AccordionsComponent(Page);
         _generalComponentsComponent = new GeneralComponentsComponent(Page);
-
-        // _practicePage = new PracticePage(Page);
+        _dragAndDropComponent = new DragAndDropComponent(Page);
         _iframePage = new IframePage(Page);
+        _fileUploadPage = new FilePage(Page);
 
-        // await _practicePage.WaitForPageLoadAsync();
         await _navigationBar.GoToPractice();
     }
 
@@ -78,13 +77,15 @@ public class PracticeTests : BrowserTestFixture
     [Test]
     public async Task FileUpload_07()
     {
-        
+        await _fileUploadPage.OpenFileUploadPage();
+        await _fileUploadPage.UploadFile();
     }
     
     [Test]
     public async Task DragAndDrop_08()
     {
-        
+        await _dragAndDropComponent.OpenDragAndDropPage();
+        await _dragAndDropComponent.DragAndDrop();
     }
     
     [Test]
@@ -102,7 +103,8 @@ public class PracticeTests : BrowserTestFixture
     [Test]
     public async Task FileDownload_11()
     {
-        
+        await _fileUploadPage.OpenFileDownloadPage();
+        await _fileUploadPage.DownloadFile();
     }
     
     [Test]

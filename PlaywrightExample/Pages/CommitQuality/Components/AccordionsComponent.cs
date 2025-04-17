@@ -13,7 +13,6 @@ public class AccordionsComponent : BasePage
     {
         _generalComponents = new GeneralComponentsComponent(Page);
         _rootLocator = rootLocator ?? throw new ArgumentNullException(nameof(rootLocator));
-        Console.WriteLine($"NavigationBarComponent created with specific root locator: {rootLocator}");
     }
     
     public AccordionsComponent(IPage page)
@@ -21,7 +20,6 @@ public class AccordionsComponent : BasePage
     {
         _generalComponents = new GeneralComponentsComponent(Page);
         _rootLocator = page.Locator(DefaultAccordionSelector);
-        Console.WriteLine($"NavigationBarComponent created with default root locator: '{DefaultAccordionSelector}'");
     }
     
     private readonly GeneralComponentsComponent _generalComponents;

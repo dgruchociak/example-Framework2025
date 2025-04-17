@@ -11,14 +11,12 @@ public class NavigationBarComponent : BasePage
         : base(page)
     {
         _rootLocator = rootLocator ?? throw new ArgumentNullException(nameof(rootLocator));
-        Console.WriteLine($"NavigationBarComponent created with specific root locator: {rootLocator}");
     }
     
     public NavigationBarComponent(IPage page)
         : base(page)
     {
         _rootLocator = page.Locator(DefaultNavBarSelector);
-        Console.WriteLine($"NavigationBarComponent created with default root locator: '{DefaultNavBarSelector}'");
     }
     
     private ILocator ProductsLink => _rootLocator.Locator("a:has-text('Products')");

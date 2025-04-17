@@ -45,7 +45,7 @@ public class GeneralComponentsComponent : BasePage
     
     //general-components-links
     private ILocator YoutubeLink => _rootLocator.Locator("//a[@data-testid='link-newtab']");
-    private ILocator ZaakceptujCookiesButton => _rootLocator.Locator("//span[contains(text(),\"Zaakceptuj wszystko\")]");
+    private ILocator AcceptCookies => _rootLocator.Locator("//span[contains(text(),\"Zaakceptuj wszystko\")]");
     
     public override async Task WaitForPageLoadAsync()
     {
@@ -110,7 +110,7 @@ public class GeneralComponentsComponent : BasePage
             await YoutubeLink.ClickAsync();
         });
         
-        await ZaakceptujCookiesButton.ClickAsync();
+        await AcceptCookies.ClickAsync();
         await newPage.WaitForLoadStateAsync();
         
         Assert.That(newPage.TitleAsync(), Is.EqualTo("CommitQuality - Youtube"));

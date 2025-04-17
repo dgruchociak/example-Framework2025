@@ -16,8 +16,8 @@ public class IframePage(IPage page) : BasePage(page)
     private ILocator GeneralComponentInFrame => Frame.Locator("//div[@class='container']");
 
     // Properties in IFrame
-    private NavigationBarComponent NavigationBar => new(page, NavBarInFrame);
-    private GeneralComponentsComponent GeneralComponents => new(page, GeneralComponentInFrame);
+    private NavigationBarComponent NavigationBar => new(Page, NavBarInFrame);
+    private GeneralComponentsComponent GeneralComponents => new(Page, GeneralComponentInFrame);
     
     public async Task OpenIframePage()
     {
