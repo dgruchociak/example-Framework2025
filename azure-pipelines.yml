@@ -1,41 +1,84 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# ==============================================================================
+# Azure Pipelines YAML dla repozytorium GitHub
+# Cel: Uruchomienie testów .NET wykorzystujących Testcontainers Cloud
+# ==============================================================================
 
+# Trigger: Uruchom pipeline przy każdym push do gałęzi 'main'
 trigger:
 - main
 
+# Agent Pool: Użyj agenta hostowanego przez Microsoft (Ubuntu)
+# Nie potrzebujemy lokalnego Dockera, bo Testcontainers Cloud zajmie się kontenerami.
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
+# Zmienne:
 variables:
-- group: Vars
+  # 1. Link do grupy zmiennych z sekretami Testcontainers Cloud
+  #    Upewnij się, że grupa 'TestcontainersCloudCredentials' istnieje w ADO Library
+  #    i zawiera sekret o nazwie 'TESTCONTAINERS_CLOUD_TOKEN'.
+  - group: Vars
 
+  # 2. Konfiguracja budowania
+  - name: buildConfiguration
+    value: 'Release'
+
+  # 3. (Opcjonalnie) Ścieżka do pliku solucji - dostosuj, jeśli potrzeba
+  - name: solutionPath
+    value: '**/*.sln' # Wyszukuje dowolny plik .sln w repozytorium
+
+  # 4. (Opcjonalnie) Wzorzec dla projektów testowych - dostosuj, jeśli potrzeba
+  - name: testProjectPattern
+    value: '**/*[Tt]ests/*.csproj' # Wyszukuje projekty .csproj w folderach kończących się na 'Tests' lub 'tests'
+
+# Kroki (sekwencja zadań do wykonania):
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-- task: Bash@3
+# Krok 1: Użyj konkretnej wersji .NET SDK (dobra praktyka dla spójności)
+- task: UseDotNet@2
+  displayName: 'Use .NET 8.0 SDK'
   inputs:
-      targetType: "inline"
-      script: 'sh -c "$(curl -fsSL https://get.testcontainers.cloud/bash)"'
-  env:
-      TC_CLOUD_TOKEN: '$(TC_CLOUD_TOKEN)'
+    packageType: 'sdk'
+    version: '8.0.x'     # Możesz zmienić na wymaganą wersję, np. '7.0.x', '6.0.x'
+    performMultiLevelLookup: true # Wyszukaj SDK na różnych poziomach
 
+# Krok 2: Przywróć zależności NuGet
 - task: DotNetCoreCLI@2
-  displayName: 'Run tests using Testcontainers Cloud'
+  displayName: 'Restore NuGet packages'
+  inputs:
+    command: 'restore'
+    projects: $(solutionPath)  # Użyj zmiennej ze ścieżką do solucji
+    feedsToUse: 'select'      # Użyj feedów NuGet z organizacji ADO lub nuget.org
+
+# Krok 3: Zbuduj solucję
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  inputs:
+    command: 'build'
+    projects: $(solutionPath) # Użyj zmiennej ze ścieżką do solucji
+    arguments: '--configuration $(buildConfiguration) --no-restore' # Zbuduj w konfiguracji Release, pomiń restore
+
+# Krok 4: Uruchom testy .NET
+# Biblioteka Testcontainers.NET automatycznie wykryje zmienną środowiskową
+# TESTCONTAINERS_CLOUD_TOKEN (dzięki zlinkowanej Variable Group) i użyje chmury.
+- task: DotNetCoreCLI@2
+  displayName: 'Run .NET tests with Testcontainers Cloud'
   inputs:
     command: 'test'
-    projects: 'PlaywrightExample/*[Tt]ests/*.csproj' # Dostosuj do struktury projektu
-    arguments: '--configuration $(buildConfiguration) --no-build --logger "trx;LogFileName=test-results.trx"'
-  # Zmienna TESTCONTAINERS_CLOUD_TOKEN jest automatycznie dostępna tutaj jako zmienna środowiskowa
-  # dzięki zlinkowaniu Variable Group w sekcji 'variables' na górze pliku.
-  # Można by ją też jawnie zmapować w sekcji 'env:', ale zazwyczaj nie jest to konieczne:
-  # env:
-  #   TESTCONTAINERS_CLOUD_TOKEN: $(TESTCONTAINERS_CLOUD_TOKEN)
+    projects: $(testProjectPattern) # Użyj zmiennej ze wzorcem projektów testowych
+    arguments: '--configuration $(buildConfiguration) --no-build --logger "trx;LogFileName=test-results.trx"' # Uruchom testy, nie buduj ponownie, zapisz wyniki do pliku TRX
+    publishTestResults: false    # Wyniki opublikujemy w osobnym, dedykowanym kroku
 
+# Krok 5: Opublikuj wyniki testów w Azure DevOps
+# Ten krok zbiera pliki .trx i wyświetla wyniki w zakładce 'Tests' w ADO.
 - task: PublishTestResults@2
   displayName: 'Publish Test Results'
+  # Uruchom ten krok nawet jeśli poprzedni (testy) zawiódł, aby zobaczyć wyniki
   condition: succeededOrFailed()
-  # ... reszta konfiguracji PublishTestResults ...
+  inputs:
+    testResultsFormat: 'VSTest'    # Format TRX jest kompatybilny z VSTest
+    testResultsFiles: '**/test-results.trx' # Wyszukaj wszystkie pliki .trx wygenerowane przez testy
+    searchFolder: '$(System.DefaultWorkingDirectory)' # Przeszukaj cały katalog roboczy agenta
+    mergeTestResults: true         # Połącz wyniki z wielu projektów testowych w jeden przebieg
+    failTaskOnFailedTests: true    # Oznacz cały pipeline jako nieudany, jeśli jakikolwiek test zawiódł
+    testRunTitle: '.NET Tests ($(Agent.JobName))' # Nadaj tytuł przebiegowi testów w ADO
