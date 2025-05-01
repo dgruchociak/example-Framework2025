@@ -10,7 +10,7 @@ trigger:
 # Agent Pool: Użyj agenta hostowanego przez Microsoft (Ubuntu)
 # Nie potrzebujemy lokalnego Dockera, bo Testcontainers Cloud zajmie się kontenerami.
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'test-laptop'
 
 # Zmienne:
 variables:
