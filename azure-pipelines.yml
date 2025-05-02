@@ -23,13 +23,10 @@ variables:
   - name: buildConfiguration
     value: 'Release'
 
-  # 3. (Opcjonalnie) Ścieżka do pliku solucji - dostosuj, jeśli potrzeba
-  - name: solutionPath
-    value: '**/*.sln' # Wyszukuje dowolny plik .sln w repozytorium
 
   # 4. (Opcjonalnie) Wzorzec dla projektów testowych - dostosuj, jeśli potrzeba
   - name: testProjectPattern
-    value: '**/*/*.csproj' # Wyszukuje projekty .csproj w folderach kończących się na 'Tests' lub 'tests'
+    value: '**/PlaywrightExample/*.csproj' # Wyszukuje projekty .csproj w folderach kończących się na 'Tests' lub 'tests'
 
 # Kroki (sekwencja zadań do wykonania):
 steps:
@@ -49,14 +46,6 @@ steps:
     command: 'restore'
     projects: $(solutionPath)  # Użyj zmiennej ze ścieżką do solucji
     feedsToUse: 'select'      # Użyj feedów NuGet z organizacji ADO lub nuget.org
-
-# Krok 3: Zbuduj solucję
-- task: DotNetCoreCLI@2
-  displayName: 'Build solution'
-  inputs:
-    command: 'build'
-    projects: $(solutionPath) # Użyj zmiennej ze ścieżką do solucji
-    arguments: '--configuration $(buildConfiguration) --no-restore' # Zbuduj w konfiguracji Release, pomiń restore
 
 # Krok 4: Uruchom testy .NET
 # Biblioteka Testcontainers.NET automatycznie wykryje zmienną środowiskową
