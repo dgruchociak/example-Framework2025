@@ -29,7 +29,7 @@ variables:
 
   # 4. (Opcjonalnie) Wzorzec dla projektów testowych - dostosuj, jeśli potrzeba
   - name: testProjectPattern
-    value: '**/*[Tt]ests/*.csproj' # Wyszukuje projekty .csproj w folderach kończących się na 'Tests' lub 'tests'
+    value: '**/PlaywrightExample/*.csproj' # Wyszukuje projekty .csproj w folderach kończących się na 'Tests' lub 'tests'
 
 # Kroki (sekwencja zadań do wykonania):
 steps:
