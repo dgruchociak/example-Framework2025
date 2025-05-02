@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SeleniumRestsharp.Core.Entity;
+namespace Playwright.Core.Entity;
 
 public class ZippoGetModel
 {

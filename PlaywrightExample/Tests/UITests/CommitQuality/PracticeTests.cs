@@ -62,17 +62,17 @@ public class PracticeTests : BrowserTestFixture
         await _iframePage.FillButtonGeneralComponentActions();
     }
     
-    [Test]
-    public async Task Apis_05()
-    {
-        
-    }
+    // [Test]
+    // public async Task Apis_05()
+    // {
+    //     
+    // }
     
-    [Test]
-    public async Task Dynamic_text_06()
-    {
-        
-    }
+    // [Test]
+    // public async Task Dynamic_text_06()
+    // {
+    //     
+    // }
     
     [Test]
     public async Task FileUpload_07()
@@ -88,17 +88,17 @@ public class PracticeTests : BrowserTestFixture
         await _dragAndDropComponent.DragAndDrop();
     }
     
-    [Test]
-    public async Task ContactUsForm_09()
-    {
-        
-    }
+    // [Test]
+    // public async Task ContactUsForm_09()
+    // {
+    //     
+    // }
     
-    [Test]
-    public async Task Mock_Datalayer_10()
-    {
-        
-    }
+    // [Test]
+    // public async Task Mock_Datalayer_10()
+    // {
+    //     
+    // }
     
     [Test]
     public async Task FileDownload_11()
@@ -107,9 +107,9 @@ public class PracticeTests : BrowserTestFixture
         await _fileUploadPage.DownloadFile();
     }
     
-    [Test]
-    public async Task TimeTesting_12()
-    {
-        
-    }
+    // [Test]
+    // public async Task TimeTesting_12()
+    // {
+    //     
+    // }
 }

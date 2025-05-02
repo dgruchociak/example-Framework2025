@@ -5,12 +5,7 @@ namespace SeleniumRestsharp.Core.ApiHelpers;
 
 public class CoinpaprikaApiHelper
 {
-    private CoinpaprikaAPI.Client _client;
-
-    public CoinpaprikaApiHelper()
-    {
-        _client = new CoinpaprikaAPI.Client();
-    }
+    private readonly CoinpaprikaAPI.Client _client = new();
 
     public async Task<IEnumerable<CoinInfo>> GetCoinInfoAsync(string id)
     {

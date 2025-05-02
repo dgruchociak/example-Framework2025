@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using Playwright.Pages.CommitQuality.Pages;
 
 namespace Playwright.Pages.CommitQuality.Components;
 

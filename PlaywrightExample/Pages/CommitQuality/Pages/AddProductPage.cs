@@ -1,7 +1,7 @@
 using Microsoft.Playwright;
 using Playwright.Core.Helpers;
 
-namespace Playwright.Pages.CommitQuality;
+namespace Playwright.Pages.CommitQuality.Pages;
 
 public class AddProductPage(IPage page) : BasePage(page)
 {

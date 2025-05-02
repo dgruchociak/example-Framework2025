@@ -1,8 +1,7 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 using RestSharp;
-using SeleniumAndRestSharp.Core;
-using SeleniumAndRestSharp.Core.Entity;
+using SeleniumRestsharp.Core.Entity;
 
 namespace SeleniumRestsharp.Core.ApiHelpers;
 
