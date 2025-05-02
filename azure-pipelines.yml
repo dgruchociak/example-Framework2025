@@ -1,73 +1,96 @@
-# ==============================================================================
-# Azure Pipelines YAML dla repozytorium GitHub
-# Cel: Uruchomienie testów .NET wykorzystujących Testcontainers Cloud
-# ==============================================================================
-
-# Trigger: Uruchom pipeline przy każdym push do gałęzi 'main'
 trigger:
-- main
+- main  # Uruchom dla zmian w gałęzi main
 
-# Agent Pool: Użyj agenta hostowanego przez Microsoft (Ubuntu)
-# Nie potrzebujemy lokalnego Dockera, bo Testcontainers Cloud zajmie się kontenerami.
 pool:
-  name: 'test-laptop'
 
-# Zmienne:
+  name: 'test-laptop' # <--- ZMIEŃ NA WŁAŚCIWĄ NAZWĘ PULI
+
 variables:
-  # 1. Link do grupy zmiennych z sekretami Testcontainers Cloud
-  #    Upewnij się, że grupa 'TestcontainersCloudCredentials' istnieje w ADO Library
-  #    i zawiera sekret o nazwie 'TESTCONTAINERS_CLOUD_TOKEN'.
   - group: Vars
 
   # 2. Konfiguracja budowania
   - name: buildConfiguration
     value: 'Release'
 
+  # 3. Wzorzec dla plików projektów do przywrócenia/zbudowania (wszystkie .csproj)
+  - name: projectPattern
+    value: '**/*.csproj'
 
-  # 4. (Opcjonalnie) Wzorzec dla projektów testowych - dostosuj, jeśli potrzeba
-  - name: testProjectPattern
-    value: '**/PlaywrightExample/*.csproj' # Wyszukuje projekty .csproj w folderach kończących się na 'Tests' lub 'tests'
+  # 4. Ścieżka/Wzorzec do głównego projektu testowego (Playwright)
+  #    !!! DOSTOSUJ, JEŚLI ŚCIEŻKA JEST INNA !!!
+  - name: playwrightTestProject
+    value: '**/PlaywrightExample/PlaywrightExample.csproj' # Celuje w konkretny projekt testowy
 
-# Kroki (sekwencja zadań do wykonania):
+# Kroki wykonywane przez agenta self-hosted:
 steps:
 
-# Krok 1: Użyj konkretnej wersji .NET SDK (dobra praktyka dla spójności)
+# Krok 1: Upewnij się, że dostępna jest właściwa wersja .NET SDK
+# (Możesz usunąć, jeśli masz pewność, że agent ma już wymaganą wersję)
 - task: UseDotNet@2
   displayName: 'Use .NET 8.0 SDK'
   inputs:
     packageType: 'sdk'
-    version: '8.0.x'     # Możesz zmienić na wymaganą wersję, np. '7.0.x', '6.0.x'
-    performMultiLevelLookup: true # Wyszukaj SDK na różnych poziomach
+    version: '8.0.x'
+    performMultiLevelLookup: true
 
-# Krok 2: Przywróć zależności NuGet
+# Krok 2: Przywróć zależności NuGet dla WSZYSTKICH projektów .csproj
 - task: DotNetCoreCLI@2
-  displayName: 'Restore NuGet packages'
+  displayName: 'Restore NuGet packages for all projects'
   inputs:
     command: 'restore'
-    projects: $(solutionPath)  # Użyj zmiennej ze ścieżką do solucji
-    feedsToUse: 'select'      # Użyj feedów NuGet z organizacji ADO lub nuget.org
+    projects: $(projectPattern) # Używa wzorca '**/*.csproj'
+    feedsToUse: 'select'
 
-# Krok 4: Uruchom testy .NET
-# Biblioteka Testcontainers.NET automatycznie wykryje zmienną środowiskową
-# TESTCONTAINERS_CLOUD_TOKEN (dzięki zlinkowanej Variable Group) i użyje chmury.
+# Krok 3: Zbuduj WSZYSTKIE projekty .csproj
 - task: DotNetCoreCLI@2
-  displayName: 'Run .NET tests with Testcontainers Cloud'
+  displayName: 'Build all projects'
+  inputs:
+    command: 'build'
+    projects: $(projectPattern) # Używa wzorca '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+
+# Krok 4: Uruchom testy Playwright (NUnit)
+# Używa tokenu Testcontainers Cloud z Variable Group do tworzenia kontenerów w chmurze.
+- task: DotNetCoreCLI@2
+  displayName: 'Run Playwright Tests with Testcontainers Cloud'
   inputs:
     command: 'test'
-    projects: $(testProjectPattern) # Użyj zmiennej ze wzorcem projektów testowych
-    arguments: '--configuration $(buildConfiguration) --no-build --logger "trx;LogFileName=test-results.trx"' # Uruchom testy, nie buduj ponownie, zapisz wyniki do pliku TRX
-    publishTestResults: false    # Wyniki opublikujemy w osobnym, dedykowanym kroku
+    # Celuje tylko w projekt testowy Playwright - dostosuj w razie potrzeby!
+    projects: $(playwrightTestProject)
+    arguments: '--configuration $(buildConfiguration) --no-build --logger "trx;LogFileName=playwright-test-results.trx"'
+    publishTestResults: false # Publikacja w osobnym kroku
 
-# Krok 5: Opublikuj wyniki testów w Azure DevOps
-# Ten krok zbiera pliki .trx i wyświetla wyniki w zakładce 'Tests' w ADO.
+# Krok 5: Opublikuj wyniki testów Playwright
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results'
-  # Uruchom ten krok nawet jeśli poprzedni (testy) zawiódł, aby zobaczyć wyniki
+  displayName: 'Publish Playwright Test Results'
   condition: succeededOrFailed()
   inputs:
-    testResultsFormat: 'VSTest'    # Format TRX jest kompatybilny z VSTest
-    testResultsFiles: '**/test-results.trx' # Wyszukaj wszystkie pliki .trx wygenerowane przez testy
-    searchFolder: '$(System.DefaultWorkingDirectory)' # Przeszukaj cały katalog roboczy agenta
-    mergeTestResults: true         # Połącz wyniki z wielu projektów testowych w jeden przebieg
-    failTaskOnFailedTests: true    # Oznacz cały pipeline jako nieudany, jeśli jakikolwiek test zawiódł
-    testRunTitle: '.NET Tests ($(Agent.JobName))' # Nadaj tytuł przebiegowi testów w ADO
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/playwright-test-results.trx' # Wyszukaj plik z wynikami Playwright
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: 'Playwright Tests ($(Agent.JobName))'
+
+# --- Opcjonalnie: Dodaj kroki dla innych testów (np. SeleniumRestsharp) ---
+# Jeśli masz inne projekty testowe (np. w folderze SeleniumRestsharp),
+# możesz skopiować i dostosować kroki 4 i 5 dla nich:
+#
+- task: DotNetCoreCLI@2
+  displayName: 'Run Selenium Tests with Testcontainers Cloud'
+  inputs:
+    command: 'test'
+    projects: '**/SeleniumRestsharp/**/TwojProjektTestowySelenium.csproj' # <-- DOSTOSUJ ŚCIEŻKĘ!
+    arguments: '--configuration $(buildConfiguration) --no-build --logger "trx;LogFileName=selenium-test-results.trx"'
+    publishTestResults: false
+
+- task: PublishTestResults@2
+  displayName: 'Publish Selenium Test Results'
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/selenium-test-results.trx' # <-- Zwróć uwagę na inną nazwę pliku
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    mergeTestResults: true # Wyniki zostaną połączone w ADO
+    failTaskOnFailedTests: true
+    testRunTitle: 'Selenium Tests ($(Agent.JobName))'
