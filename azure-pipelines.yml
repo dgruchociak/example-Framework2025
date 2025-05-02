@@ -72,18 +72,16 @@ steps:
     failTaskOnFailedTests: true
     testRunTitle: 'Playwright Tests ($(Agent.JobName))'
 
-# --- Opcjonalnie: Dodaj kroki dla innych testów (np. SeleniumRestsharp) ---
-# Jeśli masz inne projekty testowe (np. w folderze SeleniumRestsharp),
-# możesz skopiować i dostosować kroki 4 i 5 dla nich:
-#
+#krok  6
 - task: DotNetCoreCLI@2
   displayName: 'Run Selenium Tests with Testcontainers Cloud'
   inputs:
     command: 'test'
-    projects: '**/SeleniumRestsharp/**/TwojProjektTestowySelenium.csproj' # <-- DOSTOSUJ ŚCIEŻKĘ!
+    projects: '**/SeleniumRestsharp/SeleniumRestsharp.csproj' # <-- DOSTOSUJ ŚCIEŻKĘ!
     arguments: '--configuration $(buildConfiguration) --no-build --logger "trx;LogFileName=selenium-test-results.trx"'
     publishTestResults: false
 
+#krok  7
 - task: PublishTestResults@2
   displayName: 'Publish Selenium Test Results'
   condition: succeededOrFailed()
