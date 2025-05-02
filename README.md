@@ -2,7 +2,8 @@
 
 This project is a C# framework for:
 - integration testing using WireMock.NET and the Coinpaprika API.
-- ui testing using Selenium
+- ui testing using Selenium / PW
+- API tests using Restsharp / PW
 - contract testing / unit testing / e2e testing TBD
 
 ## Project Structure
@@ -26,3 +27,5 @@ This project is a C# framework for:
 - RestSharp
 - Newtonsoft.Json
 - Selenium
+- Playwright
+- Azure DevOps(pipeline with local agent)
